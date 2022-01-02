@@ -67,8 +67,8 @@ public class HideBox extends MapTileObject {
         float y = body.getPosition().y;
 
 
-        if (x > playScreen.getCharacterPosition().x && x < playScreen.getCharacterPosition().x + 0.5f &&
-                y > playScreen.getCharacterPosition().y) {
+        if (x > playScreen.getCharacterPosition().x  && x < playScreen.getCharacterPosition().x + 0.5f &&
+                y > playScreen.getCharacterPosition().y + 1.5f) {
             PolygonShape shape = new PolygonShape();
             shape.setAsBox(16 / GameManager.PPM / 2, 16 / GameManager.PPM / 2);
 
