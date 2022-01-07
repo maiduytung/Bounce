@@ -168,7 +168,7 @@ public class Brick extends MapTileObject {
         if (other.getFilter().categoryBits == GameManager.CHARACTER_HEAD_BIT) {
 
             if (!hitable) {
-                GameManager.instance.getAssetManager().get("audio/sfx/bump.wav", Sound.class).play();
+                GameManager.instance.playSFX("bump.wav");
                 return;
             }
 
@@ -177,8 +177,8 @@ public class Brick extends MapTileObject {
             if (multihit) {
                 if (hitCount > 0) {
                     playScreen.addSpawnEffect(body.getPosition().x, body.getPosition().y + 1.0f, FlippingCoin.class);
-                    GameManager.instance.getAssetManager().get("audio/sfx/coin.wav", Sound.class).play();
-                    GameManager.instance.addScore(200);
+                    GameManager.instance.playSFX("coin.wav");
+
                     GameManager.instance.addCoin();
                     playScreen.getScoreIndicator().addScoreItem(getX(), getY(), 200);
                     hitCount--;
@@ -192,14 +192,14 @@ public class Brick extends MapTileObject {
             else if(star) {
                 // generate star
                 playScreen.addSpawnItem(body.getPosition().x, body.getPosition().y + 16 / GameManager.PPM, Star.class);
-                GameManager.instance.getAssetManager().get("audio/sfx/spawn.wav", Sound.class).play();
-                GameManager.instance.addScore(200);
+                GameManager.instance.playSFX("spawn.wav");
+
                 playScreen.getScoreIndicator().addScoreItem(getX(), getY(), 200);
                 hitable = false;
             }
             else {
-                GameManager.instance.getAssetManager().get("audio/sfx/breakblock.wav", Sound.class).play();
-                GameManager.instance.addScore(50);
+                GameManager.instance.playSFX("breakblock.wav");
+
                 hit = true;
                 lethal = true;
                 explode = true;

@@ -1,14 +1,23 @@
 package com.bounce.game.hud;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -20,7 +29,7 @@ public class Hud implements Disposable {
 
     private int timeLeft;
 
-    private Label scoreLabel;
+    private Label characterCountLabel;
     private Label timeLabel;
     private Label levelLabel;
 
@@ -32,20 +41,23 @@ public class Hud implements Disposable {
 
     public Hud(SpriteBatch batch) {
 
-        Viewport viewport = new FitViewport(GameManager.WINDOW_WIDTH / 1.5f, GameManager.WINDOW_HEIGHT / 1.5f, new OrthographicCamera());
+        Viewport viewport = new FitViewport(GameManager.WINDOW_WIDTH / 2f, GameManager.WINDOW_HEIGHT / 2f, new OrthographicCamera());
         stage = new Stage(viewport, batch);
 
         timeLeft = 300;
 
         font = new BitmapFont(Gdx.files.internal("fonts/Fixedsys500c.fnt"));
+        font.getData().setScale(GameManager.SCALE/3);
         Label.LabelStyle style = new Label.LabelStyle(font, Color.WHITE);
 
-        Label scoreTextLabel = new Label("SCORE", style);
+        Image chickenImg = new Image(new Texture("icon/chicken.png"));
+        chickenImg.setSize(6.0f*GameManager.SCALE, 6.0f*GameManager.SCALE);
+
         Label timeTextLabel = new Label("TIME", style);
         Label levelTextLabel = new Label("WORLD", style);
         Label coinTextLabel = new Label("COIN", style);
 
-        scoreLabel = new Label("", style);
+        characterCountLabel = new Label("3", style);
         timeLabel = new Label(intToString(timeLeft, 3), style);
         levelLabel = new Label("1", style);
         coinCountLabel = new Label(intToString(GameManager.instance.getCoins(), 2), style);
@@ -53,15 +65,19 @@ public class Hud implements Disposable {
         Table table = new Table();
         table.top();
         table.setFillParent(true);
+        table.padTop(2.0f);
 
-        table.add(scoreTextLabel).expandX().padTop(6.0f);
-        table.add(coinTextLabel).expandX().padTop(6.0f);
-        table.add(levelTextLabel).expandX().padTop(6.0f);
-        table.add(timeTextLabel).expandX().padTop(6.0f);
+        table.add().expandX();
+        table.add(chickenImg).size(chickenImg.getWidth(), chickenImg.getHeight()).expandX();
+        table.add(coinTextLabel).expandX();
+        table.add(levelTextLabel).expandX();
+        table.add(timeTextLabel).expandX();
+        table.add().expandX();
 
         table.row();
 
-        table.add(scoreLabel).expandX();
+        table.add().expandX();
+        table.add(characterCountLabel).expandX();
         table.add(coinCountLabel).expandX();
         table.add(levelLabel).expandX();
         table.add(timeLabel).expandX();
@@ -80,7 +96,7 @@ public class Hud implements Disposable {
     }
 
     public void draw() {
-        scoreLabel.setText(intToString(GameManager.instance.getScore(), 6));
+        characterCountLabel.setText("x" + intToString(GameManager.instance.getCharacter(),1));
         stage.draw();
 
     }

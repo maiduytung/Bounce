@@ -136,7 +136,6 @@ public class MysteryBox extends MapTileObject {
         if (other.getFilter().categoryBits == GameManager.CHARACTER_HEAD_BIT) {
             if (hitable) {
 
-                GameManager.instance.addScore(200);
                 playScreen.getScoreIndicator().addScoreItem(getX(), getY(), 200);
                 hitable = false;
                 hit = true;
@@ -145,16 +144,16 @@ public class MysteryBox extends MapTileObject {
 
                 if (mapObject.getProperties().containsKey("mushroom")) {
                     playScreen.addSpawnItem(body.getPosition().x, body.getPosition().y + 16 / GameManager.PPM, Mushroom.class);
-                    GameManager.instance.getAssetManager().get("audio/sfx/spawn.wav", Sound.class).play();
+                    GameManager.instance.playSFX("spawn.wav");
                 }
                 else {
                     playScreen.addSpawnEffect(body.getPosition().x, body.getPosition().y + 1.0f, FlippingCoin.class);
-                    GameManager.instance.getAssetManager().get("audio/sfx/coin.wav", Sound.class).play();
+                    GameManager.instance.playSFX("coin.wav");
                     GameManager.instance.addCoin();
                 }
             }
             else {
-                GameManager.instance.getAssetManager().get("audio/sfx/bump.wav", Sound.class).play();
+                GameManager.instance.playSFX("bump.wav");
             }
         }
     }

@@ -3,6 +3,7 @@ package com.bounce.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bounce.game.gamesys.GameManager;
+import com.bounce.game.screens.HomeScreen;
 import com.bounce.game.screens.PlayScreen;
 
 public class Bounce extends Game {
@@ -21,7 +22,7 @@ public class Bounce extends Game {
 			gameManager = new GameManager();
 		}
 
-		setScreen(new PlayScreen(this));
+		setScreen(new HomeScreen(this));
 	}
 
 	@Override

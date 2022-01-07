@@ -33,6 +33,7 @@ import com.bounce.game.actors.maptiles.MapTileObject;
 import com.bounce.game.gamesys.GameManager;
 import com.bounce.game.hud.Hud;
 import com.bounce.game.hud.ScoreIndicator;
+import com.bounce.game.hud.TouchController;
 import com.bounce.game.utils.WorldContactListener;
 import com.bounce.game.utils.WorldCreator;
 
@@ -75,6 +76,7 @@ public class PlayScreen implements Screen {
     private Character character;
 
     private Hud hud;
+    private TouchController touchController;
     private ScoreIndicator scoreIndicator;
 
     private boolean playingHurryMusic;
@@ -128,7 +130,7 @@ public class PlayScreen implements Screen {
         mapTileObjects = worldCreator.getMapTileObject();
         enemies = worldCreator.getEnemies();
         // create character
-        if (GameManager.instance.getSavePoint()) {
+        if (GameManager.instance.getSavePoint(map)) {
             character = new Character(this, (worldCreator.getSavePosition().x + 8) / GameManager.PPM, (worldCreator.getSavePosition().y + 8) / GameManager.PPM);
         } else {
             character = new Character(this, (worldCreator.getStartPosition().x + 8) / GameManager.PPM, (worldCreator.getStartPosition().y + 8) / GameManager.PPM);
@@ -140,6 +142,8 @@ public class PlayScreen implements Screen {
         // for spawning effect
         effects = new Array<Effect>();
         effectSpawnQueue = new LinkedList<SpawningEffect>();
+
+        touchController = new TouchController(game.batch);
 
         hud = new Hud(game.batch);
         hud.setLevel("1");
@@ -164,7 +168,9 @@ public class PlayScreen implements Screen {
         setLevelCompletedScreen.setRunnable(new Runnable() {
             @Override
             public void run() {
-                game.setScreen(new GameOverScreen(game));
+                if (GameManager.instance.getCharacter() < GameManager.instance.getHighScore(map)) GameManager.instance.addHighScore(map,GameManager.instance.getCharacter());
+                GameManager.instance.unlock(map + 1);
+                game.setScreen(new WinScreen(game));
                 dispose();
             }
         });
@@ -234,6 +240,7 @@ public class PlayScreen implements Screen {
         }
     }
 
+    //TEST BOX2DD
     public void handleInput() {
 
         // press M to pause / play music
@@ -250,6 +257,7 @@ public class PlayScreen implements Screen {
 
         // Press B to toggle Box2DDebuggerRenderer
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+            System.out.println(GameManager.WINDOW_WIDTH+ "/" +GameManager.WINDOW_HEIGHT);
             renderB2DDebug = !renderB2DDebug;
         }
     }
@@ -363,27 +371,22 @@ public class PlayScreen implements Screen {
 
         cleanUpDestroyedObjects();
 
-
         // check if Character is dead
         if (character.isDead()) {
             deathCountdown -= delta;
 
             if (deathCountdown < 0) {
-                GameManager.instance.gameOver();
-                game.setScreen(new GameOverScreen(game));
+                game.setScreen(new GameScreen(game));
                 dispose();
             }
+        }
+
+        if (touchController.isExit()) {
+            game.setScreen(new LevelScreen(game));
         }
     }
 
     private void cleanUpDestroyedObjects() {
-        /*
-        for (int i = 0; i < mapTileObjects.size; i++) {
-            if (mapTileObjects.get(i).isDestroyed()) {
-                mapTileObjects.removeIndex(i);
-            }
-        }
-        */
 
         for (int i = 0; i < items.size; i++) {
             if (items.get(i).isDestroyed()) {
@@ -453,6 +456,9 @@ public class PlayScreen implements Screen {
         // draw levelCompletedStage
         levelCompletedStage.draw();
 
+        //draw touch
+        touchController.draw();
+
         // draw HUD
         hud.draw();
 
@@ -462,6 +468,10 @@ public class PlayScreen implements Screen {
 
         update(delta);
 
+    }
+
+    public TouchController getTouchController() {
+        return touchController;
     }
 
     @Override
@@ -488,6 +498,7 @@ public class PlayScreen implements Screen {
     public void dispose() {
         hud.dispose();
         scoreIndicator.dispose();
+        touchController.dispose();
         tiledMap.dispose();
         world.dispose();
         textureAtlas.dispose();

@@ -182,24 +182,24 @@ public class GuardShieldEnemy extends Enemy {
             die = false;
             body.applyLinearImpulse(new Vector2(0.0f, 7.2f), body.getWorldCenter(), true);
             becomeDead();
-            GameManager.instance.getAssetManager().get("audio/sfx/stomp.wav", Sound.class).play();
-            GameManager.instance.addScore(500);
+            GameManager.instance.playSFX("stomp.wav");
+
             playScreen.getScoreIndicator().addScoreItem(getX(), getY(), 500);
             currentState = State.DYING;
         }
         else if (shell) {
             shell = false;
             becomeShell();
-            GameManager.instance.getAssetManager().get("audio/sfx/stomp.wav", Sound.class).play();
-            GameManager.instance.addScore(500);
+            GameManager.instance.playSFX("stomp.wav");
+
             playScreen.getScoreIndicator().addScoreItem(getX(), getY(), 500);
             currentState = State.SHELLING;
         }
         else if (spin) {
             spin = false;
             becomeNoraml();
-            GameManager.instance.getAssetManager().get("audio/sfx/kick.ogg", Sound.class).play();
-            GameManager.instance.addScore(500);
+            GameManager.instance.playSFX("kick.wav");
+
             playScreen.getScoreIndicator().addScoreItem(getX(), getY(), 500);
             currentState = State.SPINNING;
         }
@@ -369,7 +369,7 @@ public class GuardShieldEnemy extends Enemy {
                             float distanceRatio = (body.getPosition().x - cameraX) / GameManager.V_WIDTH * 2;
                             float pan = MathUtils.clamp(distanceRatio, -1, 1);
                             float volume = MathUtils.clamp(2.0f - (float)Math.sqrt(Math.abs(distanceRatio)), 0, 1);
-                            GameManager.instance.getAssetManager().get("audio/sfx/bump.wav", Sound.class).play(volume, 1.0f, pan);
+                            GameManager.instance.playSFX("bump.wav",volume, pan);
                         }
                         movingRight = !movingRight;
                     }

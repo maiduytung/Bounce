@@ -67,8 +67,8 @@ public class FlyEnemy extends Enemy {
             currentState = State.STOMPED;
             becomeStomped();
 
-            GameManager.instance.getAssetManager().get("audio/sfx/stomp.wav", Sound.class).play();
-            GameManager.instance.addScore(100);
+            GameManager.instance.playSFX("stomp.wav");
+
             playScreen.getScoreIndicator().addScoreItem(getX(), getY(), 100);
         }
         else if (die) {
@@ -82,9 +82,8 @@ public class FlyEnemy extends Enemy {
             float distanceRatio = (body.getPosition().x - cameraX) / GameManager.V_WIDTH * 2;
             float pan = MathUtils.clamp(distanceRatio, -1, 1);
             float volume = MathUtils.clamp(2.0f - (float)Math.sqrt(Math.abs(distanceRatio)), 0, 1);
-            GameManager.instance.getAssetManager().get("audio/sfx/stomp.wav", Sound.class).play(volume, 1.0f, pan);
+            GameManager.instance.playSFX("stomp.wav",volume, pan);
 
-            GameManager.instance.addScore(100);
             playScreen.getScoreIndicator().addScoreItem(getX(), getY(), 100);
         }
 

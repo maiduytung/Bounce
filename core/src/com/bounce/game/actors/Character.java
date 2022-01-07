@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.bounce.game.actors.enemies.Enemy;
 import com.bounce.game.actors.items.Item;
 import com.bounce.game.gamesys.GameManager;
+import com.bounce.game.hud.TouchController;
 import com.bounce.game.screens.PlayScreen;
 
 public class Character extends RigidBody {
@@ -52,8 +53,6 @@ public class Character extends RigidBody {
     private boolean isDie;
     private boolean isBrake;
 
-    private AssetManager assetManager;
-
     public Character(PlayScreen playScreen, float x, float y) {
         super(playScreen, x, y);
         TextureAtlas textureAtlas = playScreen.getTextureAtlas();
@@ -87,8 +86,6 @@ public class Character extends RigidBody {
         isDie = false;
 
         isLevelCompleted = false;
-
-        assetManager = GameManager.instance.getAssetManager();
     }
 
 
@@ -140,19 +137,19 @@ public class Character extends RigidBody {
     private void handleInput() {
 
         // Jump
-        if ((Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) && isGround) {
+        if (playScreen.getTouchController().isUpPressed()  && isGround) {
             body.applyLinearImpulse(new Vector2(0.0f, 20.0f), body.getWorldCenter(), true);
             isJumping = true;
-            assetManager.get("audio/sfx/jump.wav", Sound.class).play();
+            GameManager.instance.playSFX("jump.wav");
         }
 
         // Move left
-        if ((Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) && body.getLinearVelocity().x > -speedMax) {
+        if (playScreen.getTouchController().isLeftPressed() && body.getLinearVelocity().x > -speedMax) {
             body.applyForceToCenter(new Vector2(-force, 0.0f), true);
         }
 
         // Move right
-        if ((Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) && body.getLinearVelocity().x < speedMax) {
+        if (playScreen.getTouchController().isRightPressed() && body.getLinearVelocity().x < speedMax) {
             body.applyForceToCenter(new Vector2(force, 0.0f), true);
         }
     }
@@ -180,9 +177,6 @@ public class Character extends RigidBody {
 
         isLevelCompleted = true;
 
-        int point = (int) MathUtils.clamp(getY(), 2.0f, 10.0f) * 100;
-        GameManager.instance.addScore(point);
-        playScreen.getScoreIndicator().addScoreItem(getX(), getY(), point);
     }
 
     public void handleLevelCompletedActions() {
@@ -239,7 +233,7 @@ public class Character extends RigidBody {
 
         if (isDie) {
             if (!isDead) {
-                assetManager.get("audio/sfx/die.wav", Sound.class).play();
+                GameManager.instance.playSFX("die.wav");
             }
             isDead = true;
             // do not collide with anything anymore
@@ -303,7 +297,6 @@ public class Character extends RigidBody {
                 break;
         }
 
-
         if ((body.getLinearVelocity().x < -0.01f || !isFacingRight)) {
             flip(true, false);
             isFacingRight = false;
@@ -312,7 +305,6 @@ public class Character extends RigidBody {
         if (body.getLinearVelocity().x > 0.01f){
             isFacingRight = true;
         }
-
 
         // limit Character's moving area
         if (body.getPosition().x < 0.5f) {
@@ -348,8 +340,6 @@ public class Character extends RigidBody {
             Item item = (Item) other.getUserData();
             item.use();
             if (item.getName().equals("mushroom")) {
-            }
-            else if (item.getName().equals("flower")) {
             }
             else if (item.getName().equals("star")) {
             }

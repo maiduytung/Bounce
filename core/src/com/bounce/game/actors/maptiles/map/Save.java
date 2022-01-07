@@ -56,7 +56,7 @@ public class Save extends MapTileObject {
     @Override
     public void onTrigger(Collider other) {
         if (other.getUserData() instanceof Character) {
-            GameManager.instance.setSavePoint();
+            GameManager.instance.setSavePoint(1);
             queueDestroy();
         }
 

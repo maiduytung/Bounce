@@ -5,42 +5,53 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.bounce.game.Bounce;
 import com.bounce.game.gamesys.GameManager;
+import com.bounce.game.hud.Hud;
 
-public class GameOverScreen implements Screen {
+public class GameScreen implements Screen {
 
     private Bounce game;
     private Stage stage;
 
     private float countDown;
 
-    public GameOverScreen(Game game) {
+    public GameScreen(Game game) {
         this.game = (Bounce) game;
-        stage = new Stage(new FitViewport(GameManager.WINDOW_WIDTH / 2, GameManager.WINDOW_HEIGHT /2));
+    }
 
-        Label gameOverTextLabel = new Label("Game Over", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+    @Override
+    public void show() {
+        stage = new Stage(new FitViewport(GameManager.WINDOW_WIDTH / 2, GameManager.WINDOW_HEIGHT /2));
+        GameManager.instance.addCharacter();
+
+        Texture chickenTexture = new Texture(Gdx.files.internal("icon/chicken.png"));
+        Drawable chickenDrawable = new TextureRegionDrawable(new TextureRegion(chickenTexture));
+        Image chickenImage = new Image(chickenDrawable);
+
+        Label gameLabel = new Label(" x " +GameManager.instance.getCharacter(), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(gameOverTextLabel).expand();
+        table.add(chickenImage).size(10f*GameManager.SCALE);
+        table.add(gameLabel);
 
         stage.addActor(table);
 
         countDown = 1f;
 
         GameManager.instance.getAssetManager().finishLoading();
-    }
-
-    @Override
-    public void show() {
-        //GameManager.instance.playMusic("game_over.ogg");
 
     }
 

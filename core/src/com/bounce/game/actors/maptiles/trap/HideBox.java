@@ -127,7 +127,6 @@ public class HideBox extends MapTileObject {
         if (other.getFilter().categoryBits == GameManager.CHARACTER_HEAD_BIT) {
             if (hitable) {
 
-                GameManager.instance.addScore(200);
                 playScreen.getScoreIndicator().addScoreItem(getX(), getY(), 200);
                 hitable = false;
                 hit = true;
@@ -135,7 +134,7 @@ public class HideBox extends MapTileObject {
                 targetPosition = movablePosition;
 
                 playScreen.addSpawnEffect(body.getPosition().x, body.getPosition().y + 1.0f, FlippingCoin.class);
-                GameManager.instance.getAssetManager().get("audio/sfx/coin.wav", Sound.class).play();
+                GameManager.instance.playSFX("coin.wav");
                 GameManager.instance.addCoin();
 
             }
